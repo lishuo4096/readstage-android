@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title>墨声 ReadStage</title>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src 'none'; object-src 'none'; connect-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<link rel="stylesheet" href="lib/github-markdown.css">
+<link rel="stylesheet" href="lib/highlight.css">
+<link rel="stylesheet" href="lib/katex.min.css">
+<script src="lib/purify.min.js"></script>
+<script src="lib/marked.min.js"></script>
+<script src="lib/highlight.min.js"></script>
+<script src="lib/katex.min.js"></script>
+<script src="lib/auto-render.min.js"></script>
+<script src="lib/mermaid.min.js"></script>
+<link rel="stylesheet" href="viewer.css">
+</head>
+<body data-theme="dark">
+
+  <!-- ===== Top bar (reader) ===== -->
+  <div id="topbar">
+    <button class="tb" id="btn-back" title="Home">‹</button>
+    <div id="title"></div>
+    <button class="tb" id="btn-find" title="Find">🔍</button>
+    <button class="tb" id="btn-toc" title="Outline">≡</button>
+    <button class="tb" id="btn-menu" title="Menu">⋮</button>
+  </div>
+
+  <!-- ===== Find bar ===== -->
+  <div id="find">
+    <input id="find-input" type="text" placeholder="Find in page" autocomplete="off" autocorrect="off" autocapitalize="none">
+    <span class="fcount" id="find-count"></span>
+    <button id="find-prev">‹</button>
+    <button id="find-next">›</button>
+    <button id="find-close">✕</button>
+  </div>
+
+  <!-- ===== Overflow menu ===== -->
+  <div id="menu">
+    <button class="mi" id="mi-reload">↻ Reload from disk</button>
+    <button class="mi" id="mi-share">⤴ Share</button>
+    <button class="mi" id="mi-settings">⚙ Settings</button>
+    <button class="mi" id="mi-home">⌂ Library</button>
+  </div>
+
+  <!-- ===== Reading progress ===== -->
+  <div id="progress"></div>
+
+  <!-- ===== Reader ===== -->
+  <div id="reader">
+    <article id="content" class="markdown-body"></article>
+  </div>
+
+  <!-- ===== Home / library ===== -->
+  <div id="home">
+    <div class="home-head">
+      <div class="home-title">Markdown Reader</div>
+      <button class="tb" id="home-settings" title="Settings">⚙</button>
+    </div>
+    <button class="primary" id="home-open">📂 Open a Markdown file</button>
+    <button class="secondary" id="home-folder">📁 Open a folder</button>
+
+    <div id="folder-section" style="display:none">
+      <div class="recent-head">
+        <span id="folder-name">Folder</span>
+        <span>
+          <button class="link" id="folder-change">Change</button>
+          <button class="link" id="folder-clear">Remove</button>
+        </span>
+      </div>
+      <input id="folder-filter" type="text" placeholder="Filter files" autocomplete="off" autocorrect="off" autocapitalize="none">
+      <ul id="folder-list"></ul>
+      <div id="folder-empty" style="display:none">No markdown files in this folder.</div>
+    </div>
+
+    <div class="recent-head"><span>Recent</span><button class="link" id="recent-clear">Clear all</button></div>
+    <ul id="recent-list"></ul>
+    <div id="recent-empty">No recent files yet. Open one to get started.</div>
+  </div>
+
+  <!-- ===== Sheets ===== -->
+  <div id="scrim"></div>
+
+  <div class="sheet" id="toc">
+    <div class="sheet-head"><h3>Outline</h3><button class="x" data-close="toc">✕</button></div>
+    <ul id="toc-list"></ul>
+    <div id="toc-empty" style="display:none">No headings in this document.</div>
+  </div>
+
+  <div class="sheet" id="settings">
+    <div class="sheet-head"><h3>Settings</h3><button class="x" data-close="settings">✕</button></div>
+
+    <div class="setting">
+      <div class="label">Theme</div>
+      <div class="sub">Auto follows your system light/dark setting.</div>
+      <div class="seg" id="set-theme">
+        <button data-v="auto">Auto</button>
+        <button data-v="dark">Dark</button>
+        <button data-v="black">Black</button>
+        <button data-v="light">Light</button>
+        <button data-v="sepia">Sepia</button>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="label">Reading font</div>
+      <div class="seg" id="set-font">
+        <button data-v="sans">Sans</button>
+        <button data-v="serif">Serif</button>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="label">Text size</div>
+      <div class="stepper">
+        <button id="size-dn">A−</button>
+        <div class="val" id="size-val">17 px</div>
+        <button id="size-up">A+</button>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="label">Content width</div>
+      <div class="seg" id="set-width">
+        <button data-v="comfortable">Comfortable</button>
+        <button data-v="full">Full width</button>
+      </div>
+    </div>
+
+    <div class="setting rowswitch">
+      <div class="label" style="margin:0">Wrap long code lines</div>
+      <label class="switch"><input type="checkbox" id="set-wrap"><span class="slider"></span></label>
+    </div>
+
+    <div class="setting rowswitch">
+      <div>
+        <div class="label" style="margin:0">Reopen last file on launch</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="set-reopen"><span class="slider"></span></label>
+    </div>
+
+    <div class="about">Markdown Reader · fully offline · no ads, no tracking</div>
+  </div>
+
+<script src="viewer.js"></script>
+<link rel="stylesheet" href="studio.css"><script src="studio-core.js"></script><script src="studio.js"></script>
+<link rel="stylesheet" href="novel.css"><script src="novel.js"></script>
+</body>
+</html>

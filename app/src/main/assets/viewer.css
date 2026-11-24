@@ -1,0 +1,212 @@
+  /* ---------- Theme variables ---------- */
+  :root {
+    --font-sans: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+    --font-serif: Georgia,"Times New Roman",serif;
+    --content-font: var(--font-sans);
+    --fs: 17px;
+    --maxw: 860px;
+  }
+  body[data-theme="dark"] {
+    --bg:#0d1117; --surface:#161b22; --surface2:#21262d; --on:#e6edf3;
+    --muted:#7d8590; --accent:#4493f8; --accent-btn:#1f6feb; --divider:#30363d;
+    --code-bg:rgba(110,118,129,.35);
+  }
+  body[data-theme="light"] {
+    --bg:#ffffff; --surface:#f6f8fa; --surface2:#eaeef2; --on:#1f2328;
+    --muted:#59636e; --accent:#0969da; --accent-btn:#0969da; --divider:#d1d9e0;
+    --code-bg:rgba(129,139,152,.18);
+  }
+  body[data-theme="sepia"] {
+    --bg:#f4ecd8; --surface:#ece0c8; --surface2:#e2d4b7; --on:#5b4636;
+    --muted:#7a6a55; --accent:#9a5b28; --accent-btn:#9a5b28; --divider:#ddceb4;
+    --code-bg:rgba(120,100,70,.16);
+  }
+  /* AMOLED — pure black to keep OLED pixels off. */
+  body[data-theme="black"] {
+    --bg:#000000; --surface:#0b0b0d; --surface2:#18181c; --on:#e6edf3;
+    --muted:#8b949e; --accent:#4493f8; --accent-btn:#1f6feb; --divider:#26262b;
+    --code-bg:rgba(110,118,129,.35);
+  }
+
+  html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(--on);
+    font-family:var(--font-sans); -webkit-text-size-adjust:100%; }
+  * { -webkit-tap-highlight-color: transparent; }
+  button { font-family:inherit; cursor:pointer; }
+
+  /* ---------- View switching ---------- */
+  #home   { display:none; }
+  #reader { display:none; }
+  #topbar { display:none; }
+  body.view-home #home     { display:block; }
+  body.view-reader #reader { display:block; }
+  body.view-reader #topbar { display:flex; }
+
+  /* ---------- Top bar ---------- */
+  #topbar {
+    position:fixed; top:0; left:0; right:0; height:52px; z-index:50;
+    align-items:center; gap:2px; padding:0 4px;
+    background:var(--surface); border-bottom:1px solid var(--divider);
+  }
+  .tb { background:transparent; border:0; color:var(--on); font-size:20px;
+    width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+  .tb:active { background:var(--surface2); }
+  #title { flex:1; min-width:0; font-size:15px; font-weight:600; color:var(--on);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 4px; }
+
+  /* Content sits below the fixed top bar in reader view. */
+  body.view-reader { padding-top:52px; }
+
+  /* ---------- Markdown body theming (overrides github-markdown.css) ---------- */
+  .markdown-body {
+    box-sizing:border-box; max-width:var(--maxw); margin:0 auto;
+    padding:18px 16px 120px; font-size:var(--fs); line-height:1.7;
+    font-family:var(--content-font); color:var(--on); background:var(--bg);
+  }
+  .markdown-body a { color:var(--accent); }
+  .markdown-body h1, .markdown-body h2 { border-bottom-color:var(--divider); }
+  .markdown-body hr { background-color:var(--divider); }
+  .markdown-body blockquote { color:var(--muted); border-left-color:var(--divider); }
+  .markdown-body table tr { background-color:var(--bg); border-top-color:var(--divider); }
+  .markdown-body table tr:nth-child(2n) { background-color:var(--surface); }
+  .markdown-body table td, .markdown-body table th { border-color:var(--divider); }
+  .markdown-body img { max-width:100%; height:auto; }
+  /* Inline code follows the theme; fenced blocks stay dark for consistent highlighting. */
+  .markdown-body code, .markdown-body tt { background-color:var(--code-bg); color:var(--on); }
+  .markdown-body pre { background:#161b22 !important; border-radius:8px; }
+  .markdown-body pre code, .markdown-body pre tt { background:transparent !important; color:#e6edf3; }
+  body.wrap-code .markdown-body pre { white-space:pre-wrap; word-wrap:break-word; }
+
+  /* ---------- Mermaid diagrams ---------- */
+  .markdown-body .mermaid { margin:16px 0; text-align:center; overflow-x:auto; }
+  .markdown-body .mermaid svg { max-width:100%; height:auto; }
+  /* Before a diagram renders, show its source in a muted pre instead of a flash. */
+  .markdown-body .mermaid:not([data-processed]) { color:var(--muted); font-size:13px;
+    white-space:pre-wrap; text-align:left; font-family:ui-monospace,Menlo,Consolas,monospace; }
+
+  /* ---------- Copy button on code blocks ---------- */
+  .markdown-body pre { position:relative; }
+  .copy-btn { position:absolute; top:6px; right:6px; z-index:2;
+    background:rgba(110,118,129,.30); color:#e6edf3; border:0; border-radius:6px;
+    font-size:12px; padding:5px 9px; line-height:1; opacity:.75; }
+  .copy-btn:active { background:rgba(110,118,129,.55); }
+  .copy-btn.done { opacity:1; background:var(--accent-btn); color:#fff; }
+
+  /* ---------- Reading-progress bar ---------- */
+  #progress { position:fixed; top:52px; left:0; height:3px; width:0; z-index:49;
+    background:var(--accent); transition:width .08s linear; display:none; }
+  body.view-reader #progress { display:block; }
+
+  /* ---------- YAML front-matter card ---------- */
+  .frontmatter { max-width:var(--maxw); margin:18px auto 0; padding:14px 16px;
+    background:var(--surface); border:1px solid var(--divider); border-radius:10px;
+    font-size:14px; box-sizing:border-box; }
+  .frontmatter .fm-title { font-size:18px; font-weight:700; color:var(--on); margin-bottom:6px; }
+  .frontmatter dl { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:0; }
+  .frontmatter dt { color:var(--muted); font-weight:600; }
+  .frontmatter dd { margin:0; color:var(--on); word-break:break-word; }
+
+  /* ---------- Find highlights ---------- */
+  mark.find { background:#ffd33d; color:#1f2328; border-radius:2px; }
+  mark.find.current { background:#ff9800; }
+
+  /* ---------- Home screen ---------- */
+  #home { max-width:720px; margin:0 auto; padding:24px 18px 60px; }
+  .home-head { display:flex; align-items:center; justify-content:space-between; margin:12px 0 22px; }
+  .home-title { font-size:24px; font-weight:700; }
+  .primary {
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    background:var(--accent-btn); color:#fff; border:0; border-radius:12px;
+    padding:16px; font-size:16px; font-weight:600;
+  }
+  .primary:active { filter:brightness(.92); }
+  .secondary {
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    background:transparent; color:var(--on); border:1px solid var(--divider); border-radius:12px;
+    padding:14px; font-size:15px; font-weight:600; margin-top:10px;
+  }
+  .secondary:active { background:var(--surface2); }
+  #folder-filter { width:100%; box-sizing:border-box; margin:2px 0 8px;
+    background:var(--bg); color:var(--on); border:1px solid var(--divider);
+    border-radius:8px; padding:9px 10px; font-size:14px; outline:none; }
+  .recent-head { display:flex; align-items:center; justify-content:space-between;
+    margin:28px 4px 8px; color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.05em; }
+  .link { background:transparent; border:0; color:var(--accent); font-size:13px; }
+  #recent-list { list-style:none; margin:0; padding:0; }
+  .recent-item { display:flex; align-items:center; gap:10px; padding:12px 6px;
+    border-bottom:1px solid var(--divider); }
+  .recent-item .ri-main { flex:1; min-width:0; }
+  .recent-item .ri-name { font-size:16px; font-weight:600; color:var(--on);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .recent-item .ri-sub { font-size:12px; color:var(--muted);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .recent-item .ri-x { background:transparent; border:0; color:var(--muted); font-size:18px;
+    width:36px; height:36px; border-radius:8px; flex:none; }
+  .recent-item .ri-x:active { background:var(--surface2); }
+  #recent-empty { color:var(--muted); text-align:center; padding:30px 0; }
+
+  /* ---------- Menu dropdown ---------- */
+  #menu { position:fixed; top:50px; right:6px; z-index:60; background:var(--surface);
+    border:1px solid var(--divider); border-radius:10px; overflow:hidden; min-width:180px;
+    box-shadow:0 8px 28px rgba(0,0,0,.35); display:none; }
+  #menu.open { display:block; }
+  .mi { display:flex; align-items:center; gap:10px; padding:13px 16px; color:var(--on);
+    font-size:15px; background:transparent; border:0; width:100%; text-align:left; }
+  .mi:active { background:var(--surface2); }
+
+  /* ---------- Find bar ---------- */
+  #find { position:fixed; top:52px; left:0; right:0; z-index:55; display:none;
+    align-items:center; gap:4px; padding:6px 8px; background:var(--surface);
+    border-bottom:1px solid var(--divider); }
+  #find.open { display:flex; }
+  #find input { flex:1; min-width:0; background:var(--bg); color:var(--on);
+    border:1px solid var(--divider); border-radius:8px; padding:9px 10px; font-size:15px; outline:none; }
+  #find .fcount { color:var(--muted); font-size:13px; min-width:44px; text-align:center; }
+  #find button { background:transparent; border:0; color:var(--on); font-size:18px; width:40px; height:40px; border-radius:8px; }
+  #find button:active { background:var(--surface2); }
+
+  /* ---------- Drawer (TOC) & Settings share the sheet backdrop ---------- */
+  #scrim { position:fixed; inset:0; z-index:70; background:rgba(0,0,0,.5); display:none; }
+  #scrim.open { display:block; }
+  .sheet { position:fixed; z-index:80; background:var(--surface); color:var(--on);
+    display:none; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .sheet.open { display:block; }
+  /* TOC slides from the right */
+  #toc { top:0; right:0; bottom:0; width:82%; max-width:360px; border-left:1px solid var(--divider); }
+  /* Settings slides up from the bottom */
+  #settings { left:0; right:0; bottom:0; max-height:88%; border-top-left-radius:16px; border-top-right-radius:16px; }
+  .sheet-head { position:sticky; top:0; background:var(--surface); display:flex; align-items:center;
+    justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--divider); }
+  .sheet-head h3 { margin:0; font-size:17px; }
+  .sheet-head .x { background:transparent; border:0; color:var(--on); font-size:22px; width:40px; height:40px; }
+  #toc-list { list-style:none; margin:0; padding:8px 0 40px; }
+  #toc-list li a { display:block; padding:9px 18px; color:var(--on); text-decoration:none; font-size:15px;
+    border-left:3px solid transparent; }
+  #toc-list li a:active { background:var(--surface2); }
+  #toc-list li.lvl2 a { padding-left:34px; font-size:14px; }
+  #toc-list li.lvl3 a { padding-left:50px; font-size:14px; color:var(--muted); }
+  #toc-list li.lvl4 a, #toc-list li.lvl5 a, #toc-list li.lvl6 a { padding-left:66px; font-size:13px; color:var(--muted); }
+  #toc-empty { padding:24px 18px; color:var(--muted); }
+
+  /* ---------- Settings controls ---------- */
+  .setting { padding:16px 18px; border-bottom:1px solid var(--divider); }
+  .setting .label { font-size:15px; margin-bottom:10px; }
+  .setting .sub { font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:10px; }
+  .seg { display:flex; gap:8px; }
+  .seg button { flex:1; padding:10px; border:1px solid var(--divider); background:var(--bg); color:var(--on);
+    border-radius:9px; font-size:14px; }
+  .seg button.sel { background:var(--accent-btn); color:#fff; border-color:var(--accent-btn); }
+  /* Theme picker has 5 options — lay them out 3-per-row instead of squeezing one line. */
+  #set-theme { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .stepper { display:flex; align-items:center; gap:14px; }
+  .stepper button { width:48px; height:44px; border:1px solid var(--divider); background:var(--bg); color:var(--on);
+    border-radius:9px; font-size:20px; }
+  .stepper .val { flex:1; text-align:center; font-size:15px; }
+  .rowswitch { display:flex; align-items:center; justify-content:space-between; }
+  .switch { position:relative; width:50px; height:30px; flex:none; }
+  .switch input { opacity:0; width:0; height:0; }
+  .slider { position:absolute; inset:0; background:var(--surface2); border-radius:30px; transition:.15s; }
+  .slider:before { content:""; position:absolute; width:24px; height:24px; left:3px; top:3px;
+    background:#fff; border-radius:50%; transition:.15s; }
+  .switch input:checked + .slider { background:var(--accent-btn); }
+  .switch input:checked + .slider:before { transform:translateX(20px); }
+  .about { padding:18px; color:var(--muted); font-size:13px; text-align:center; }
